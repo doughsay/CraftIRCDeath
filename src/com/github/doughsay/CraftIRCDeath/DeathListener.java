@@ -12,18 +12,22 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
+import org.bukkit.plugin.Plugin;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
 import com.ensifera.animosity.craftirc.RelayedMessage;
+import com.onarandombox.MultiverseCore.api.*;
 
 public class DeathListener extends EntityListener {
 
     private CraftIRC craftIrc;
 	private DeathPoint deathPoint;
+	private Plugin multiverse;
 
-    public DeathListener(CraftIRC craftIrc, DeathPoint deathPoint) {
+    public DeathListener(CraftIRC craftIrc, DeathPoint deathPoint, Plugin multiverse) {
         this.craftIrc = craftIrc;
         this.deathPoint = deathPoint;
+        this.multiverse = multiverse;
     }
 
     public void onEntityDeath(EntityDeathEvent event) {
@@ -93,8 +97,6 @@ public class DeathListener extends EntityListener {
             if (!msg.isEmpty()) {
                 Location location = player.getLocation();
                 sendToCraftIRC(msg, name, location);
-
-                //this.logger.info(msg + " ([" + location.getWorld().getName() + "] " + ((int) location.getX()) + ", " + ((int) location.getY()) + ", " + ((int) location.getZ()) + ")");
             }
         }
     }
@@ -103,7 +105,14 @@ public class DeathListener extends EntityListener {
     	RelayedMessage rMsg = craftIrc.newMsg(deathPoint, null, "death");
 		rMsg.setField("message", msg);
 		rMsg.setField("player", name);
-		rMsg.setField("world", location.getWorld().getName());
+
+		String worldName = location.getWorld().getName();
+
+		if(multiverse != null && multiverse.isEnabled()) {
+			worldName = ((MVPlugin)multiverse).getCore().getMVWorldManager().getMVWorld(location.getWorld()).getColoredWorldString();
+		}
+
+		rMsg.setField("world", worldName);
 		rMsg.post();
     }
 
