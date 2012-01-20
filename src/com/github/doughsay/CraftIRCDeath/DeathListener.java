@@ -1,5 +1,4 @@
-package com.djdch.bukkit.deathlog.listener;
-
+package com.github.doughsay.CraftIRCDeath;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,40 +13,19 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 
-import com.djdch.bukkit.deathlog.DeathLog;
-import com.djdch.bukkit.util.Logger;
+import com.ensifera.animosity.craftirc.CraftIRC;
+import com.ensifera.animosity.craftirc.RelayedMessage;
 
-/**
- * Class who listen for any player death.
- * 
- * @author DjDCH
- */
 public class DeathListener extends EntityListener {
-    /**
-     * Contains the DeathLog instance.
-     */
-    protected DeathLog deathlog;
 
-    /**
-     * Contains the Logger instance.
-     */
-    protected final Logger logger;
+    private CraftIRC craftIrc;
+	private DeathPoint deathPoint;
 
-    /**
-     * Constructor for the initialization of the DeathListener class.
-     * 
-     * @param deathlog Contains the DeathLog instance.
-     */
-    public DeathListener(DeathLog deathlog) {
-        this.deathlog = deathlog;
-        this.logger = deathlog.getLogger();
+    public DeathListener(CraftIRC craftIrc, DeathPoint deathPoint) {
+        this.craftIrc = craftIrc;
+        this.deathPoint = deathPoint;
     }
 
-    /**
-     * Method who is called each time an entity die in the game.
-     * 
-     * @param event Contains the EntityDeathEvent instance.
-     */
     public void onEntityDeath(EntityDeathEvent event) {
         String msg = "";
 
@@ -65,16 +43,14 @@ public class DeathListener extends EntityListener {
 
                     if (damager instanceof Skeleton) {
                         LivingEntity livingEntity = (LivingEntity) damager;
-
-                        msg = name + " was shot by " + getNameFromLivingEntity(livingEntity);
+                        msg = " was shot by " + getNameFromLivingEntity(livingEntity);
                     } else if (cause.equals(DamageCause.ENTITY_EXPLOSION)) {
-                        msg = name + " blew up";
+                        msg = " blew up";
                     } else if (damager instanceof LivingEntity) {
                         LivingEntity livingEntity = (LivingEntity) damager;
-
-                        msg = name + " was slain by " + getNameFromLivingEntity(livingEntity);
+                        msg = " was slain by " + getNameFromLivingEntity(livingEntity);
                     } else {
-                        msg = name + " died 'EntityDamageByEntityEvent'";
+                        msg = " died";
                     }
                 } else if (lastDamageEvent instanceof EntityDamageByBlockEvent) {
                     EntityDamageByBlockEvent lastDamageByBlockEvent = (EntityDamageByBlockEvent) lastDamageEvent;
@@ -82,52 +58,55 @@ public class DeathListener extends EntityListener {
 
                     if (cause.equals(DamageCause.CONTACT)) {
                         if (damager.getType() == Material.CACTUS) {
-                            msg = name + " was pricked to death";
+                            msg = " was pricked to death";
                         } else {
-                            msg = name + " died 'CONTACT','EntityDamageByBlockEvent'";
+                            msg = " died";
                         }
                     } else if (cause.equals(DamageCause.LAVA)) {
-                        msg = name + " tried to swim in lava";
+                        msg = " tried to swim in lava";
                     } else if (cause.equals(DamageCause.VOID)) {
-                        msg = name + " fell out of the world";
+                        msg = " fell out of the world";
                     } else {
-                        msg = name + " died 'EntityDamageByBlockEvent'";
+                        msg = " died";
                     }
                 } else {
                     if (cause.equals(DamageCause.FIRE)) {
-                        msg = name + " went up in flames";
+                        msg = " went up in flames";
                     } else if (cause.equals(DamageCause.FIRE_TICK)) {
-                        msg = name + " burned to death";
+                        msg = " burned to death";
                     } else if (cause.equals(DamageCause.SUFFOCATION)) {
-                        msg = name + " suffocated in a wall";
+                        msg = " suffocated in a wall";
                     } else if (cause.equals(DamageCause.DROWNING)) {
-                        msg = name + " drowned";
+                        msg = " drowned";
                     } else if (cause.equals(DamageCause.STARVATION)) {
-                        msg = name + " starved to death";
+                        msg = " starved to death";
                     } else if (cause.equals(DamageCause.FALL)) {
-                        msg = name + " hit the ground too hard";
+                        msg = " hit the ground too hard";
                     } else {
-                        msg = name + " died 'EntityDamageEvent'";
+                        msg = " died";
                     }
                 }
             } else {
-                msg = name + " died";
+                msg = " died";
             }
 
             if (!msg.isEmpty()) {
                 Location location = player.getLocation();
+                sendToCraftIRC(msg, name, location);
 
-                this.logger.info(msg + " ([" + location.getWorld().getName() + "] " + ((int) location.getX()) + ", " + ((int) location.getY()) + ", " + ((int) location.getZ()) + ")");
+                //this.logger.info(msg + " ([" + location.getWorld().getName() + "] " + ((int) location.getX()) + ", " + ((int) location.getY()) + ", " + ((int) location.getZ()) + ")");
             }
         }
     }
 
-    /**
-     * Method who return a display name depending of the livingEntity type.
-     * 
-     * @param livingEntity Contains the LivingEntity instance.
-     * @return Contains the display name string.
-     */
+    private void sendToCraftIRC(String msg, String name, Location location) {
+    	RelayedMessage rMsg = craftIrc.newMsg(deathPoint, null, "death");
+		rMsg.setField("message", msg);
+		rMsg.setField("player", name);
+		rMsg.setField("world", location.getWorld().getName());
+		rMsg.post();
+    }
+
     public static String getNameFromLivingEntity(LivingEntity livingEntity) {
         String name = "";
 

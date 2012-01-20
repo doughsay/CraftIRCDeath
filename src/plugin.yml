@@ -1,6 +1,0 @@
-name: DeathLog
-description: Show death messages in the server console/log.
-author: DjDCH
-main: com.djdch.bukkit.deathlog.DeathLog
-version: 0.1
-website: http://dev.bukkit.org/server-mods/deathlog/
