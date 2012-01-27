@@ -6,19 +6,20 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.plugin.Plugin;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
 import com.ensifera.animosity.craftirc.RelayedMessage;
 import com.onarandombox.MultiverseCore.api.*;
 
-public class DeathListener extends EntityListener {
+public class DeathListener implements Listener {
 
     private CraftIRC craftIrc;
 	private DeathPoint deathPoint;
@@ -30,6 +31,7 @@ public class DeathListener extends EntityListener {
         this.multiverse = multiverse;
     }
 
+    @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         String msg = "";
 
