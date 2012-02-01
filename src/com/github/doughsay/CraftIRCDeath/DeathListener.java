@@ -49,14 +49,14 @@ public class DeathListener implements Listener {
 
                     if (damager instanceof Skeleton) {
                         LivingEntity livingEntity = (LivingEntity) damager;
-                        msg = " was shot by " + getNameFromLivingEntity(livingEntity);
+                        msg = "was shot by " + getNameFromLivingEntity(livingEntity);
                     } else if (cause.equals(DamageCause.ENTITY_EXPLOSION)) {
-                        msg = " blew up";
+                        msg = "blew up";
                     } else if (damager instanceof LivingEntity) {
                         LivingEntity livingEntity = (LivingEntity) damager;
-                        msg = " was slain by " + getNameFromLivingEntity(livingEntity);
+                        msg = "was slain by " + getNameFromLivingEntity(livingEntity);
                     } else {
-                        msg = " died";
+                        msg = "died";
                     }
                 } else if (lastDamageEvent instanceof EntityDamageByBlockEvent) {
                     EntityDamageByBlockEvent lastDamageByBlockEvent = (EntityDamageByBlockEvent) lastDamageEvent;
@@ -64,36 +64,36 @@ public class DeathListener implements Listener {
 
                     if (cause.equals(DamageCause.CONTACT)) {
                         if (damager.getType() == Material.CACTUS) {
-                            msg = " was pricked to death";
+                            msg = "was pricked to death";
                         } else {
-                            msg = " died";
+                            msg = "died";
                         }
                     } else if (cause.equals(DamageCause.LAVA)) {
-                        msg = " tried to swim in lava";
+                        msg = "tried to swim in lava";
                     } else if (cause.equals(DamageCause.VOID)) {
-                        msg = " fell out of the world";
+                        msg = "fell out of the world";
                     } else {
-                        msg = " died";
+                        msg = "died";
                     }
                 } else {
                     if (cause.equals(DamageCause.FIRE)) {
-                        msg = " went up in flames";
+                        msg = "went up in flames";
                     } else if (cause.equals(DamageCause.FIRE_TICK)) {
-                        msg = " burned to death";
+                        msg = "burned to death";
                     } else if (cause.equals(DamageCause.SUFFOCATION)) {
-                        msg = " suffocated in a wall";
+                        msg = "suffocated in a wall";
                     } else if (cause.equals(DamageCause.DROWNING)) {
-                        msg = " drowned";
+                        msg = "drowned";
                     } else if (cause.equals(DamageCause.STARVATION)) {
-                        msg = " starved to death";
+                        msg = "starved to death";
                     } else if (cause.equals(DamageCause.FALL)) {
-                        msg = " hit the ground too hard";
+                        msg = "hit the ground too hard";
                     } else {
-                        msg = " died";
+                        msg = "died";
                     }
                 }
             } else {
-                msg = " died";
+                msg = "died";
             }
 
             if (!msg.isEmpty()) {

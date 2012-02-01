@@ -1,5 +1,5 @@
 name: CraftIRCDeath
 main: com.github.doughsay.CraftIRCDeath.CraftIRCDeath
-version: 0.2
+version: 0.3
 depend: [CraftIRC]
 softdepend: [Multiverse-Core]
